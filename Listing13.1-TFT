@@ -1,0 +1,70 @@
+#include <SD.h>
+#include <TFT.h>
+#include <SPI.h>
+
+#define TFT_CS  10
+#define SD_CS   4
+#define DC      9
+#define RST     8
+
+int lightPos = 0;
+int currentTemp = 1;
+
+PImage backgroundIMG;
+TFT screen = TFT(TFT_CS, DC, RST);
+char tempPrintout[10];
+
+void setup()
+{
+    screen.begin();
+    screen.stroke(255, 255, 255);
+    screen.background(0, 0, 0);
+    
+    if (!SD.begin(SD_CS))
+    {
+        screen.text("Error: Cannot Initiate SD Card", 0, 0);
+        return;
+    }    
+    if(!backgroundIMG.isValid())
+    {
+        screen.text("Error: Can't open background image", 0, 0);
+        return;
+    }
+    screen.setTextSize(5);
+}
+
+void loop()
+{
+    int lightLevel = map(analogRead(A1), 0, 1023, 0, 64);
+    if (lightPos == 160)
+    {
+        screen.image(backgroundIMG, 0, 0);
+        screen.stroke(0,0, 255);
+        screen.fill(0,0, 255);
+        screen.rect(100, 0, 60, 50);
+        lightPos = 0;
+    }
+    
+    screen.stroke(127, 255, 255);
+    screen.line(lightPos, screen.hight() - lightLevel,
+        lightPost, screen.height());
+    lightPos++
+    
+    int tempReading = analogRead(A2);
+    int tempC = tempReading / 9.31;
+    
+    if (tempC != currentTemp)
+    {
+        screen.stroke(0, 0, 255);
+        screen.fill(0, 0, 255);
+        screen.rect(100, 0, 60, 50);
+        screen.stroke(255, 255, 255);
+        
+        String tempval = String(tempC);
+        tempVal.toCharArray(tempPrintout, 4);
+        screen.text(tempPrintout, 120, 5);
+        currentTemp = tempC;
+    }
+    
+    delay(2000);
+}
