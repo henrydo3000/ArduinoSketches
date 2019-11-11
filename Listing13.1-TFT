@@ -1,7 +1,14 @@
 #include <SD.h>
-#include <TFT.h>
+#include <TFT.h>        //imports TFT library of functions into IDE during compiling
 #include <SPI.h>
 
+
+// initializes TFT objects 
+// provides different pins used to communicate with the controller
+// pin: CS, DC, RESET
+// DC pin = data/command tells the controller if the informaionbeing sent is data or a command
+// CS pin = chip/select is used by the SPI bus.
+// RESET pin = resets TFT screen if necessary
 #define TFT_CS  10
 #define SD_CS   4
 #define DC      9
